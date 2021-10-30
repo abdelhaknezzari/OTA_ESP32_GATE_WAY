@@ -1,0 +1,34 @@
+
+
+ESP32 Gatway 
+
+Use I2C :
+
+* Get the data from sensors
+
+* Connect to another slave microcontroller card, to cooperate 
+
+first step:
+
+![](pictures/bigPicture1.png)
+
+
+final step:
+![](pictures/bigPicture2.png)
+
+
+
+
+
+
+
+
+Sensors:
+
+* Distance sensor [sharp GP2Y0E02B](https://www.mouser.fr/datasheet/2/365/GP2Y0E02B_SPEC-1360760.pdf)
+
+![](pictures/sharp_distance_I2C.png)
+
+* Accelerometer [mpu6050](https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-6000-Register-Map1.pdf)
+
+
