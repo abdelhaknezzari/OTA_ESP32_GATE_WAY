@@ -7,18 +7,12 @@
 #include "Wire.h"
 #include "MicroTuple.h"
 #include "SharpGP2Y0E02B.h"
+#include "AcceleroMPU6050.h"
 
 SharpGP2Y0E02B distanceInfrared;
+AcceleroMPU6050 acceleroMPU6050;
 
-const int MPU_addr = 0x68;
-int16_t AcX, AcY, AcZ, Tmp, GyX, GyY, GyZ;
 
-int minVal = 265;
-int maxVal = 402;
-
-double x;
-double y;
-double z;
 
 #define I2C_EXAMPLE_MASTER_SCL_IO 16 /*!< gpio number for I2C master clock */
 #define I2C_EXAMPLE_MASTER_SDA_IO 32 /*!< gpio number for I2C master data  */
@@ -47,38 +41,6 @@ void initServo()
   servoX.attach(pinServoX, 50, 2400);
 }
 
-void initMPU6050()
-{
-  Wire.begin();
-  Wire.beginTransmission(MPU_addr);
-  Wire.write(0x6B);
-  Wire.write(0);
-  Wire.endTransmission(true);
-}
-
-MicroTuple<double, double, double> readXYZAccel()
-{
-
-  Wire.beginTransmission(MPU_addr);
-  Wire.write(0x3B);
-  Wire.endTransmission(false);
-  Wire.requestFrom(MPU_addr, 14, 1);
-
-  AcX = Wire.read() << 8 | Wire.read();
-  AcY = Wire.read() << 8 | Wire.read();
-  AcZ = Wire.read() << 8 | Wire.read();
-  int xAng = map(AcX, minVal, maxVal, -90, 90);
-  int yAng = map(AcY, minVal, maxVal, -90, 90);
-  int zAng = map(AcZ, minVal, maxVal, -90, 90);
-
-  x = RAD_TO_DEG * (atan2(-yAng, -zAng) + PI);
-  y = RAD_TO_DEG * (atan2(-xAng, -zAng) + PI);
-  z = RAD_TO_DEG * (atan2(-yAng, -xAng) + PI);
-
-  delay(400);
-
-  return {x, y, z};
-}
 
 const char *loginIndex =
     "<form name='loginForm'>"
@@ -250,7 +212,7 @@ void setup(void)
 
   pinMode(LED_BUILTIN, OUTPUT);
 
-  initMPU6050();
+  acceleroMPU6050.init();
   distanceInfrared.init();
 
 }
@@ -260,19 +222,8 @@ void loop(void)
   server.handleClient();
   delay(1);
 
-  MicroTuple<double, double, double> accel = readXYZAccel();
-
-  Serial.print("AngleX= ");
-  Serial.println((double)accel.get<0>(), 2);
-  Serial.print("AngleY= ");
-  Serial.println((double)accel.get<1>(), 2);
-  Serial.print("AngleZ= ");
-  Serial.println((double)accel.get<2>(), 2);
-  Serial.println("-----------------------------------------");
-
-
-  Serial.print("obstacle distance in CM= ");
-  Serial.println(distanceInfrared.read());
+  acceleroMPU6050.print();
+  distanceInfrared.print();
   
 
   digitalWrite(LED_BUILTIN, HIGH); // turn the LED on (HIGH is the voltage level)

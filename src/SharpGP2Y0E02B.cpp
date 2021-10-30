@@ -1,5 +1,6 @@
 #include "SharpGP2Y0E02B.h"
 #include "Wire.h"
+#include <Update.h>
 
 void SharpGP2Y0E02B::init(){
       // Start comms
@@ -15,11 +16,15 @@ void SharpGP2Y0E02B::init(){
 
 }
 
+void SharpGP2Y0E02B::print(){
+  Serial.print("obstacle distance in CM= ");
+  Serial.println(read());
+}
+
 double SharpGP2Y0E02B::read(){
   int distance = 0;   // Stores the calculated distance
   
   uint8_t high, low = 0; // High and low byte of distance
-
 
  // Request and read the 2 address bytes from the GP2Y0E02B
   Wire.beginTransmission(ADDRESS);

@@ -12,4 +12,5 @@ class SharpGP2Y0E02B
 public:
   void init();
   double read();
+  void print();
 };
