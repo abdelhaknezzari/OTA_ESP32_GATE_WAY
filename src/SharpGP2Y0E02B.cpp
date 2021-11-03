@@ -4,8 +4,6 @@
 
 void SharpGP2Y0E02B::init(){
       // Start comms
-  Wire.begin();
-
   Wire.beginTransmission(ADDRESS);    
   Wire.write(SHIFT);
   Wire.endTransmission();
